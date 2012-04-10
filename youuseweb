@@ -1,0 +1,87 @@
+#lang scheme
+(provide interface-version stuffer start)
+(define interface-version 'stateless)
+(require web-server/servlet/web)
+(require web-server/stuffers/base64)
+(require web-server/stuffers)
+(require web-server/stuffers/hmac-sha1)
+(require web-server/lang/stuff-url)
+(require web-server/servlet)
+(require htdp/image)
+(require srfi/13)
+(require srfi/14)
+(require "graphics.ss")
+(require "fvico.ss")
+;;Where the templates are taken care of
+(require "render.ss")
+;;How we serlialize our data
+(define mystuffer
+   (stuffer-chain
+    serialize-stuffer
+    (md5-stuffer (build-path "/tmp/" ".urls"))))
+(define (start req)
+  (phase-1 req))
+
+(define (phase-1 request)
+  (local [(define (response-generator make-url)
+            (render-with-wait "Sniffing browser history for collage" " - phase2" 
+                              (list "/sitelist.js" "/hist.js") (make-url phase-2) "") )]
+    (send/suspend/dispatch response-generator)
+  ))
+
+(define (maketasteylist str)
+  (string-tokenize str (char-set-complement (char-set #\newline)))
+  )
+
+(define (extracticourls ls)
+    (findicourls ls)
+  )
+
+(define (phase-2 request)
+  (local ((define bindings (request-bindings request))
+          (define tl (maketasteylist (cond 
+                                   ((exists-binding? 'sitelist bindings) (extract-binding/single 'sitelist bindings))
+                                   (else "" )
+                                   ) ))
+          )
+    
+  (local [(define (response-generator make-url)
+            (render-with-wait "Fetching icon urls for collage" " - phase2" 
+                              (list "foo.js") (make-url myphase-3) 
+                              (string-append (foldr string-append "" tl) 
+                                             (foldr string-append "" (map url->string icos) )) ))
+          ;;Extract the icon urls
+          (define icos
+            (extracticourls tl))
+          
+          ;;Implicitly capture the state. I love scheme
+          (define (myphase-3 request)
+            (phase-3 icos request )
+            )
+          ]
+    (send/suspend/dispatch response-generator))))
+;;Omnomnom I take the favicon list and give you cheese 
+(define (phase-3 favicolist request)
+  (local [(define (response-generator make-url)
+            (render-shirt "Generated collage" (map url->string favicolist)  (make-url myphase-4) ))
+          (define (myphase-4 request)
+            (phase-4 favicolist request)
+            )
+          ]
+    (send/suspend/dispatch response-generator)))
+
+(define (phase-4 favicolist request)
+  (list #"image/png"  (composite favicolist))
+  ;;omnomnom
+  )
+
+(require web-server/servlet-env)
+(serve/servlet start
+               #:launch-browser? #t
+               #:quit? #f
+               #:listen-ip #f
+               #:port 8000
+               #:extra-files-paths
+               (list (build-path "/home/holden/repos/repos/youuseweb" "static"))
+               #:servlet-path
+               "/app/")

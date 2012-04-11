@@ -1,7 +1,8 @@
 
 function start() {
-//myJsProgressBarHandler.setPercentage('element1',50);
-setTimeout("done()",300);
+//myJsProgressBarHandler.setPercentage('element1',70);
+//oook.... 
+setTimeout("done()",500);
 }
 
 function done() {

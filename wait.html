@@ -1,16 +1,31 @@
 <center>
-<form name="myform" action="@to " method="GET">
+<form name="myform" id="myform" action="@to" method="POST"> 
+<!--^ where we redirect if using foo.js which does redirects -->
 <input type="hidden" name="sitelist">
-<input type="submit" value="Skip">
+<input type="hidden" id="total" name="total" value="@total"> 
+<script lang="javascript">
+var nexturl="@to";
+var totalcount=@total;
+</script>
+<!-- ^ The total number of elements to be processed if using jsfoo -->
+<!-- <input type="submit" value="Skip"> -->
 </form>
-<img src="/ajax-loader.gif"><br/>
-<H2> </H2> <br />
+<!--<img src="/ajax-loader.gif">--><br/>
+<H2> Please wait: @waitingfor </H2> <br />
+<div id="e1" display="none">
+<div id="demo">
+<span class="progressBar" id="element1">0%</span><br/>
+^The progress bar occasionally lies. I'll try and teach it better.<br/>
+If this seems to be taking awhile, or you get a warning about a long running script, then you likely visit a lot of web2.0 sites and your collage is taking a while to build. Mr. Penguin only wadles so quickly you see.<br/>
+</div>
+</div>
 </center>
-<div id="linktest" >
-<a href="/foo" name="mylink" id="mylink" display="none">testlink</a>
+<div id="linktest" display="none">
+<a href="/foo" name="mylink" id="mylink">testlink</a>
 <a href="http://www.uwaterloo.ca"> foo</a>
 <!--
 Your urls were:
 @flist
+^that was flist
 -->
 </div>

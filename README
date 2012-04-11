@@ -1,0 +1,7 @@
+Build note:
+Important note: As of the writing of this README (Monday July 6th 2009) youuseweb depends on the absolute latest version of plt-scheme (namely the one pulled form svn)
+This is necessary for:
+	* imagemagick fixes
+	* servelet-env fixes
+You can find instructions for checking out and  installing the SVN version of plt-scheme on http://svn.plt-scheme.org/
+It may be possible to work around these issues with an older version if you wish by using the svn collects version, but no gaurantees.

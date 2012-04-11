@@ -1,15 +1,18 @@
 #lang scheme
 (provide (all-defined-out))
-(require htdp/image)
-(require mrlib/gif)
+;(require htdp/image)
+;(require mrlib/gif)
 (require net/url-structs)
 (require net/url)
 (require net/head)
 (require mzlib/foreign) (unsafe!)
-;(load-extension "mzimagemagick.so")
+;;(load-extension "mzimagemagick.so")
 (require srfi/74)
 ;;(require ffi/magick (for-syntax scheme/base))
-(require "magick.ss")
+(require "proxy.ss")
+(require ffi/magick)
+;;(require "magick.ss")
+(require "mypath.ss")
 ;;note:  MagickReadImageBlob reads an image or image sequence from a blob.
 
 (define (composite lurls)
@@ -29,8 +32,8 @@
        )
       ;(with-handlers (((lambda (x) #t) (lambda (x) ww)))
         (map (lambda (x) (MagickScaleImage x tastey tastey )) usefulwands) ;;Resize images
-        (MagickReadImage ww "/home/holden/repos/repos/youuseweb/bg.png")
-        (MagickScaleImage ww size (+ 50  size))
+        (MagickReadImage ww (build-path mypath "bg.png"))
+        (MagickScaleImage ww size (+ 0  size))
         (MagickSetFilename ww "composite.png")
         (composeonto ww wc
                      size 0 0 (- size 1) tastey usefulwands usefulwands)
@@ -177,3 +180,4 @@
  "http://en.wikipedia.org/favicon.ico"))
 ;(define c (map string->url someurls))
 ;(define d (mycomposite c))
+;        (MagickReadImage  "/users/hkarau/awesome/bg.jpg")

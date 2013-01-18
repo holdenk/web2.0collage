@@ -21,11 +21,11 @@
 (define mystuffer   (stuffer-chain
    (stuffer-chain
    serialize-stuffer
-;;   (HMAC-SHA1-stuffer mykb)
+   (HMAC-SHA1-stuffer mykb)
    base64-stuffer)
    is-url-too-big?
    (stuffer-chain
-;;    (HMAC-SHA1-stuffer mykb)
+    (HMAC-SHA1-stuffer mykb)
     gzip-stuffer
     base64-stuffer)
    is-url-too-big?
